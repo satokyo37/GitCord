@@ -8,9 +8,9 @@ import { handleMyIssuesCommand } from "../src/core/commands/myIssues";
 
 const DISCORD_PUBLIC_KEY = process.env.DISCORD_PUBLIC_KEY!;
 
-if (!DISCORD_PUBLIC_KEY) {
-  throw new Error("DISCORD_PUBLIC_KEY is not set");
-}
+// if (!DISCORD_PUBLIC_KEY) {
+//   throw new Error("DISCORD_PUBLIC_KEY is not set");
+// }
 
 async function readRawBody(req: VercelRequest): Promise<Buffer> {
   const chunks: Buffer[] = [];
@@ -40,11 +40,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const rawBody = await readRawBody(req);
 
-  const isValid = verifyKey(rawBody, signature, timestamp, DISCORD_PUBLIC_KEY);
-  if (!isValid) {
-    res.status(401).send("Bad request signature");
-    return;
-  }
+  // const isValid = verifyKey(rawBody, signature, timestamp, DISCORD_PUBLIC_KEY);
+  // if (!isValid) {
+  //   res.status(401).send("Bad request signature");
+  //   return;
+  // }
 
   const body = JSON.parse(rawBody.toString("utf8"));
 
