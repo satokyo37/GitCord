@@ -1,0 +1,31 @@
+{
+  "name": "gitcord",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/api/discord.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/satokyo37/GitCord.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/satokyo37/GitCord/issues"
+  },
+  "homepage": "https://github.com/satokyo37/GitCord#readme",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@vercel/node": "^5.5.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "discord-interactions": "^4.4.0"
+  }
+}
