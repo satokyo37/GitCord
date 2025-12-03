@@ -8,6 +8,10 @@ import { handleMyIssuesCommand } from "../src/core/commands/myIssues";
 
 const DISCORD_PUBLIC_KEY = process.env.DISCORD_PUBLIC_KEY!;
 
+if (!DISCORD_PUBLIC_KEY) {
+  throw new Error("DISCORD_PUBLIC_KEY is not set");
+}
+
 async function readRawBody(req: VercelRequest): Promise<Buffer> {
   const chunks: Buffer[] = [];
   for await (const chunk of req) {
@@ -26,6 +30,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const timestamp = req.headers["x-signature-timestamp"] as string | undefined;
 
   if (!signature || !timestamp) {
+    console.warn("Discord interaction missing signature headers", {
+      signaturePresent: !!signature,
+      timestampPresent: !!timestamp,
+    });
     res.status(401).send("Missing request signature headers");
     return;
   }

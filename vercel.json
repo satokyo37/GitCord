@@ -1,7 +1,7 @@
 {
   "version": 2,
   "functions": {
-    "api/github-webhook.ts": {
+    "api/githubWebhook.ts": {
       "runtime": "nodejs20.x"
     },
     "api/discord.ts": {
