@@ -90,7 +90,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: { content },
+        data: { content, flags: 1 << 6 },
       });
       return;
     }
@@ -99,6 +99,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         content: `🤖 未対応のコマンドです: \`${commandName}\``,
+        flags: 1 << 6,
       },
     });
     return;
