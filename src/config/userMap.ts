@@ -13,7 +13,8 @@ function loadUsersConfig(): UsersFile {
     try {
       return JSON.parse(raw) as UsersFile;
     } catch (e) {
-      throw new Error("USERS_JSON is not valid JSON");
+      console.error("USERS_JSON is not valid JSON", e);
+      return { users: [] };
     }
   }
 
