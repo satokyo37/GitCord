@@ -1,4 +1,4 @@
-import usersConfig from "../../config/users.json";
+import usersConfig from "@config/users.json";
 
 type UserConfig = {
   discordId: string;

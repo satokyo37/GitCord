@@ -1,5 +1,5 @@
-import { sendDiscordMessage } from "../notifiers/discord";
-import { isKnownGitHubLogin } from "../config/userMap";
+import { sendDiscordMessage } from "@/notifiers/discord";
+import { isKnownGitHubLogin } from "@/config/userMap";
 
 type IssuesEventPayload = {
   action: string;

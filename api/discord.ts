@@ -4,6 +4,7 @@ import {
   InteractionType,
   InteractionResponseType,
 } from "discord-interactions";
+import { handleMyIssuesCommand } from "@/core/commands/myIssues";
 
 const PUBLIC_KEY = process.env.DISCORD_PUBLIC_KEY ?? "";
 
@@ -75,10 +76,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (body.type === InteractionType.APPLICATION_COMMAND) {
+    const commandName = body.data?.name as string;
+    console.log("Received command:", commandName);
+
+    if (commandName === "my-issues") {
+      const discordUserId: string =
+        body.member?.user?.id ?? body.user?.id ?? "unknown";
+
+      const content = await handleMyIssuesCommand(discordUserId).catch((e) => {
+        console.error("my-issues error:", e);
+        return "⚠️ GitHub から issue を取得できませんでした。";
+      });
+
+      res.status(200).json({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: { content },
+      });
+      return;
+    }
+
     res.status(200).json({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
-        content: `👌 Received command: ${body.data?.name ?? "unknown"}`,
+        content: `🤖 未対応のコマンドです: \`${commandName}\``,
       },
     });
     return;
