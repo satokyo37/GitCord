@@ -11,6 +11,7 @@ GitHub の issue アサインを Discord で通知し、スラッシュコマン
 - Discord Application（Interactions と Webhook 用）
 - GitHub の Personal Access Token（`public_repo` 権限で十分）
 - Discord Webhook URL（通知投稿先）
+- `config/users.json`（Discord ID と GitHub ログインの対応表）
 
 ## 環境変数
 
@@ -20,7 +21,7 @@ Vercel/ローカルのどちらでも以下を設定します。
 - `DISCORD_WEBHOOK_URL`: 通知を送る Discord Webhook URL
 - `GITHUB_TOKEN`: GitHub API 用の PAT
 - `GITHUB_WEBHOOK_SECRET`: GitHub Webhook のシークレット
-- `USERS_JSON` (任意): Discord ID と GitHub ログインの対応表を JSON 文字列で渡す。未設定の場合は `config/users.json` を読み込みます。
+- `GITHUB_REPO` (任意): `/my-issues` の結果を特定リポジトリ（`owner/repo` 形式）に絞りたい場合に指定
 
 ## ユーザー対応表
 
@@ -37,14 +38,14 @@ Vercel/ローカルのどちらでも以下を設定します。
 }
 ```
 
-例: 環境変数に渡す場合  
+例: 環境変数に渡す場合
 `USERS_JSON='{"users":[{"discordId":"222222222222222222","githubLogin":"another-user"}]}'`
 
 ## デプロイ手順（フォークから Vercel まで）
 
 1. このリポジトリをフォークする。
-2. ユーザー対応表を準備する  
-   - 環境変数で管理する場合は後述の `USERS_JSON` に設定。  
+2. ユーザー対応表を準備する
+   - 環境変数で管理する場合は後述の `USERS_JSON` に設定。
    - ファイル管理したい場合は `config/users.json` を作成しコミット。
 3. Vercel で「Import Project」を選び、フォーク先リポジトリを選択。
 4. **Environment Variables** に前述の変数（`USERS_JSON` を含め必要なもの）を追加してデプロイ。
@@ -58,7 +59,7 @@ Vercel/ローカルのどちらでも以下を設定します。
 4. スラッシュコマンドを登録
    - Name: `my-issues`
    - Description: Show assigned GitHub issues
-   - Type: Chat Input (標準)  
+   - Type: Chat Input (標準)
      Application Commands の登録は Discord Portal で GUI から設定できます。
 5. Bot をサーバーに追加（必要なスコープ: `applications.commands`）。
 
@@ -79,11 +80,11 @@ Vercel/ローカルのどちらでも以下を設定します。
 
 ```bash
 npm install
-cp config/users.example.json config/users.json # 適宜編集
 npm run build
 npm start
 ```
 
+- `npm start` は `dist/api/discord.js` を起動します（`npm run build` が必要）。
 - 開発中に Interaction の署名検証が必要な場合、`ngrok` などで `api/discord` を公開し Discord に URL を設定してください。
 - `USERS_JSON` を使う場合は `export USERS_JSON='{"users":[...]}'` のように設定してください。
 - `npm start` は `dist/api/discord.js` を起動します。TypeScript を直接動かす場合は `ts-node` を利用してください。

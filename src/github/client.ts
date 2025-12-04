@@ -8,9 +8,14 @@ export type GitHubIssue = {
   repository_url: string;
 };
 
+type FetchAssignedIssuesOptions = {
+  limit?: number;
+  repo?: string;
+};
+
 export async function fetchAssignedIssues(
   githubLogin: string,
-  options?: { limit?: number }
+  options?: FetchAssignedIssuesOptions
 ): Promise<GitHubIssue[]> {
   if (!GITHUB_TOKEN) {
     throw new Error("GITHUB_TOKEN is not set");
@@ -19,7 +24,14 @@ export async function fetchAssignedIssues(
   const limit = options?.limit ?? 10;
 
   const url = new URL(`${GITHUB_API_BASE}/search/issues`);
-  url.searchParams.set("q", `assignee:${githubLogin} is:open is:issue`);
+
+  const queryParts = [`assignee:${githubLogin}`, "is:open", "is:issue"];
+
+  if (options?.repo) {
+    queryParts.push(`repo:${options.repo}`);
+  }
+
+  url.searchParams.set("q", queryParts.join(" "));
   url.searchParams.set("sort", "updated");
   url.searchParams.set("order", "desc");
   url.searchParams.set("per_page", String(limit));
