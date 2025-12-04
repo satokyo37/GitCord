@@ -1,9 +1,27 @@
-import usersConfig from "@config/users.json";
-
 type UserConfig = {
   discordId: string;
   githubLogin: string;
 };
+
+type UsersFile = {
+  users: UserConfig[];
+};
+
+function loadUsersConfig(): UsersFile {
+  const raw = process.env.USERS_JSON;
+  if (raw) {
+    try {
+      return JSON.parse(raw) as UsersFile;
+    } catch (e) {
+      throw new Error("USERS_JSON is not valid JSON");
+    }
+  }
+
+  const local = require("@config/users.json") as UsersFile;
+  return local;
+}
+
+const usersConfig = loadUsersConfig();
 
 const userMap: Record<string, string> = {};
 const githubLoginSet = new Set<string>();

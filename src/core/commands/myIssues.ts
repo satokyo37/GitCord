@@ -9,7 +9,7 @@ export async function handleMyIssuesCommand(
   if (!login) {
     return [
       "⚠️ この Discord アカウントには GitHub アカウントの紐付けがありません。",
-      "GitCord の `config/users.json` に Discord ID と GitHub ログインを追加してください。",
+      "Discord ID と GitHub ログインを追加してください。",
     ].join("\n");
   }
 
