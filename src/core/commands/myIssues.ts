@@ -1,5 +1,5 @@
-import { fetchAssignedIssues } from "@/github/client";
-import { resolveGitHubLoginFromDiscordUser } from "@/config/userMap";
+import { fetchAssignedIssues } from "../../github/client";
+import { resolveGitHubLoginFromDiscordUser } from "../../config/userMap";
 
 export async function handleMyIssuesCommand(
   discordUserId: string
