@@ -4,7 +4,7 @@ import {
   InteractionType,
   InteractionResponseType,
 } from "discord-interactions";
-import { handleMyIssuesCommand } from "@/core/commands/myIssues";
+import { handleMyIssuesCommand } from "../src/core/commands/myIssues";
 
 const PUBLIC_KEY = process.env.DISCORD_PUBLIC_KEY ?? "";
 
