@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/api/discord.js"
+    "start": "node dist/api/discord.js",
+    "register:discord-commands": "tsx scripts/register-commands.mjs"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "@vercel/node": "^5.5.14",
     "dotenv": "^17.2.3",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {

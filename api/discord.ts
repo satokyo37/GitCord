@@ -5,6 +5,7 @@ import {
   InteractionResponseType,
 } from "discord-interactions";
 import { handleMyIssuesCommand } from "../src/core/commands/myIssues";
+import { handleMyReviewsCommand } from "../src/core/commands/myReviews";
 
 const PUBLIC_KEY = process.env.DISCORD_PUBLIC_KEY ?? "";
 
@@ -86,6 +87,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const content = await handleMyIssuesCommand(discordUserId).catch((e) => {
         console.error("my-issues error:", e);
         return "⚠️ GitHub から issue を取得できませんでした。";
+      });
+
+      res.status(200).json({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: { content, flags: 1 << 6 },
+      });
+      return;
+    }
+
+    if (commandName === "my-reviews") {
+      const discordUserId: string =
+        body.member?.user?.id ?? body.user?.id ?? "unknown";
+
+      const content = await handleMyReviewsCommand(discordUserId).catch((e) => {
+        console.error("my-reviews error:", e);
+        return "⚠️ GitHub からレビュー依頼中のPRを取得できませんでした。";
       });
 
       res.status(200).json({

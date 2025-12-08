@@ -13,7 +13,12 @@ if (!DISCORD_APPLICATION_ID || !DISCORD_GUILD_ID || !DISCORD_BOT_TOKEN) {
 const commands = [
   {
     name: "my-issues",
-    description: "Show GitHub issues assigned to me",
+    description: "自分にアサインされているIssue一覧を表示する",
+    type: 1,
+  },
+  {
+    name: "my-reviews",
+    description: "自分にレビュー依頼されているPR一覧を表示する",
     type: 1,
   },
 ];
