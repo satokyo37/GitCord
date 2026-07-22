@@ -1,9 +1,11 @@
 # GitCord
 
-GitHub の issue アサインを Discord で通知し、スラッシュコマンドで自分宛の open issue を一覧できるシンプルなサーバーレス Bot です。フォークしてそのまま Vercel へデプロイすれば、チームの Discord に統合できます。
+GitHub の issue アサインを Discord で通知し、スラッシュコマンドで自分宛の open issue とレビュー依頼を一覧できるシンプルな Bot です。Vercel Functions と通常の Node.js HTTP サーバーのどちらでも動作します。
 
-- `/api/discord`: Discord Interaction エンドポイント。`/my-issues` コマンドで自分にアサインされた open issue を取得。
+- `/api/discord`: Discord Interaction エンドポイント。`/my-issues` と `/my-reviews` を処理。
 - `/api/githubWebhook`: GitHub Webhook 受信エンドポイント。`issues` の `assigned` イベントを、Discord Webhook へ通知。
+
+現在は1デプロイにつき1つのDiscord Application、通知先、GitHub設定を扱う単一チーム向け構成です。設計の詳細と意思決定は[docs/architecture.md](./docs/architecture.md)を参照してください。
 
 ## 必要なもの
 
@@ -41,7 +43,7 @@ Vercel/ローカルのどちらでも以下を設定します。
 例: 環境変数に渡す場合
 `USERS_JSON='{"users":[{"discordId":"222222222222222222","githubLogin":"another-user"}]}'`
 
-## デプロイ手順（フォークから Vercel まで）
+## Vercelへのデプロイ手順
 
 1. このリポジトリをフォークする。
 2. ユーザー対応表を準備する
@@ -56,11 +58,7 @@ Vercel/ローカルのどちらでも以下を設定します。
 1. Discord Developer Portal で Application を作成。
 2. **Interactions Endpoint URL** に `https://<your-vercel-domain>/api/discord` を設定。
 3. Public Key を環境変数 `DISCORD_PUBLIC_KEY` として Vercel に登録。
-4. スラッシュコマンドを登録
-   - Name: `my-issues`
-   - Description: Show assigned GitHub issues
-   - Type: Chat Input (標準)
-     Application Commands の登録は Discord Portal で GUI から設定できます。
+4. `.env` または環境変数へ `DISCORD_APPLICATION_ID`、`DISCORD_GUILD_ID`、`DISCORD_BOT_TOKEN` を設定し、`npm run register:discord-commands` でスラッシュコマンドを登録。
 5. Bot をサーバーに追加（必要なスコープ: `applications.commands`）。
 
 ## GitHub Webhook 設定
@@ -73,21 +71,33 @@ Vercel/ローカルのどちらでも以下を設定します。
 
 ## 使い方
 
-- Discord で `/my-issues` を実行すると、実行ユーザーの Discord ID と `USERS_JSON` または `config/users.json` で紐付けられた GitHub アカウントにアサインされた open issue を最大 10 件返します。
+- Discord で `/my-issues` を実行すると、実行ユーザーの Discord ID と `USERS_JSON` または `config/users.json` で紐付けられた GitHub アカウントにアサインされた open issue を最大 100 件返します。
+- Discord で `/my-reviews` を実行すると、同じGitHubアカウントへレビュー依頼されている open PR を最大 50 件返します。
 - GitHub の issue が誰か（紐付け済みの GitHub ログイン）に `assigned` されると、`DISCORD_WEBHOOK_URL` へ通知します。
 
 ## ローカル開発
 
 ```bash
 npm install
+npm run dev
+```
+
+既定では `http://localhost:3000` で起動し、Vercelと同じエンドポイントを公開します。
+
+- Discord Interaction: `http://localhost:3000/api/discord`
+- GitHub Webhook: `http://localhost:3000/api/githubWebhook`
+
+DiscordとGitHubからローカル環境へ接続するには、`ngrok`などでHTTPサーバーを公開してください。待ち受け先は`HOST`、ポートは`PORT`で変更できます。
+
+本番相当の起動は次のとおりです。
+
+```bash
 npm run build
 npm start
 ```
 
-- `npm start` は `dist/api/discord.js` を起動します（`npm run build` が必要）。
-- 開発中に Interaction の署名検証が必要な場合、`ngrok` などで `api/discord` を公開し Discord に URL を設定してください。
+- `npm start` はコンパイル済みのNode.js HTTPサーバーを起動します（`npm run build` が必要）。
 - `USERS_JSON` を使う場合は `export USERS_JSON='{"users":[...]}'` のように設定してください。
-- `npm start` は `dist/api/discord.js` を起動します。TypeScript を直接動かす場合は `ts-node` を利用してください。
 
 ## トラブルシュート
 
