@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 type UserConfig = {
   discordId: string;
   githubLogin: string;
@@ -18,8 +21,16 @@ function loadUsersConfig(): UsersFile {
     }
   }
 
-  const local = require("@config/users.json") as UsersFile;
-  return local;
+  const configPath = path.resolve(process.cwd(), "config/users.json");
+  try {
+    return JSON.parse(fs.readFileSync(configPath, "utf8")) as UsersFile;
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT") {
+      console.error(`${configPath} could not be loaded`, error);
+    }
+    return { users: [] };
+  }
 }
 
 const usersConfig = loadUsersConfig();

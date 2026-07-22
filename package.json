@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && node --test dist/test/*.test.js",
     "build": "tsc",
-    "start": "node dist/api/discord.js",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/src/server.js",
     "register:discord-commands": "tsx scripts/register-commands.mjs"
   },
   "repository": {
@@ -23,12 +24,12 @@
   "devDependencies": {
     "@types/node": "^24.10.1",
     "@vercel/node": "^5.5.14",
-    "dotenv": "^17.2.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "discord-interactions": "^4.4.0"
+    "discord-interactions": "^4.4.0",
+    "dotenv": "^17.2.3"
   }
 }
